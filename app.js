@@ -1,17 +1,27 @@
 const express = require('express');
+const morgan = require('morgan');
+
+const tourRouter = require('./routes/tourRoutes');
+
+const userRouter = require('./routes/userRoutes');
 
 const app = express();
 
-app.get('/', (req, res) => {
-    res
-    .status(200)
-    .json({message: 'Hello from the server side', 
-        app: "Natours"});
-})
 
-app.post('/', (req, res) => {
-    res.send("You can post to this endpoint ...");
+app.use(express.json());
+
+app.use(morgan('dev'));
+
+app.use((req, res, next) => {
+    req.requestTime = new Date().toISOString();
+    next();
 });
+
+// Mounting routes
+app.use('/api/v1/tours', tourRouter);
+app.use('/api/v1/users', userRouter);
+
+
 const port = 3000;
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
