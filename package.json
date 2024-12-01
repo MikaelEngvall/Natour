@@ -19,5 +19,8 @@
     "lru-cache": "^11.0.2",
     "mongoose": "^8.8.3",
     "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "ndb": "^1.1.5"
   }
 }
