@@ -1,6 +1,15 @@
 const request = require('supertest');
 const app = require('./../app');
 
+let server;
+
+beforeAll(() => {
+  server = app.listen(4000); // Start the server on a specific port
+});
+
+afterAll((done) => {
+  server.close(done); // Close the server after tests
+});
 describe('App', () => {
 
     it('Should return a 404 error for a non-existent route', async () => {

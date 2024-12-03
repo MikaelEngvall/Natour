@@ -10,7 +10,6 @@ if (process.env.NODE_ENV === 'production') {
 
 const app = require('./app');
 
-
 const DB = process.env.DATABASE.replace(
   '<PASSWORD>',
   process.env.DATABASE_PASSWORD
@@ -19,9 +18,15 @@ const DB = process.env.DATABASE.replace(
 mongoose.connect(DB)
 .then(() => console.log('Connected to database')).catch((err) => console.log('MongoDB connection error:', err));
 
-const port = 3000;
-app.listen(port, () => {
+const port = process.env.PORT;
+const server = app.listen(port, () => {
   console.log(`Running in ${process.env.NODE_ENV} mode on port ${process.env.PORT}`);
 });
 
+process.on('unhandledRejection', (err) => {
+  console.error('UNHANDLED REJECTION! �� Shutting down...', err);
+  server.close(()=>{
+    process.exit(1);
+  });
+});
 
