@@ -1,0 +1,184 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API Documentation",
+    "version": "1.0.0",
+    "description": "This is the API documentation for Natours."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000/api/v1",
+      "description": "Local server"
+    }
+  ],
+  "paths": {
+    "/tours": {
+      "get": {
+        "summary": "Get all tours",
+        "responses": {
+          "200": {
+            "description": "A list of tours",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Tour"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new tour",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Tour"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Tour created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Tour"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tours/{id}": {
+      "get": {
+        "summary": "Get a tour by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID of the tour to retrieve",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tour retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Tour"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Tour not found"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update a tour by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID of the tour to update",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Tour"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Tour updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Tour"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Tour not found"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a tour by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID of the tour to delete",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Tour deleted successfully"
+          },
+          "404": {
+            "description": "Tour not found"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Tour": {
+        "type": "object",
+        "required": ["name", "price", "duration"],
+        "properties": {
+          "id": { "type": "string", "example": "5d8b5b5b5b5b5b5b5b5b5b5b" },
+          "name": { "type": "string", "example": "The Forest Hiker" },
+          "duration": { "type": "number", "example": 7 },
+          "price": { "type": "number", "example": 497 },
+          "maxGroupSize": { "type": "number", "example": 25 },
+          "difficulty": { "type": "string", "example": "easy" },
+          "ratingsAverage": { "type": "number", "example": 4.7 },
+          "ratingsQuantity": { "type": "number", "example": 34 },
+          "summary": { "type": "string", "example": "Exciting tour for nature lovers" },
+          "description": { "type": "string", "example": "Detailed description of the tour." },
+          "imageCover": { "type": "string", "example": "tour-1-cover.jpg" },
+          "images": {
+            "type": "array",
+            "items": { "type": "string" },
+            "example": ["image1.jpg", "image2.jpg"]
+          },
+          "startDates": {
+            "type": "array",
+            "items": { "type": "string", "format": "date-time" },
+            "example": ["2024-01-01T00:00:00.000Z", "2024-02-01T00:00:00.000Z"]
+          }
+        }
+      }
+    }
+  }
+}
