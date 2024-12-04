@@ -23,6 +23,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 // Middleware to add request time
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
+
   next();
 });
 
