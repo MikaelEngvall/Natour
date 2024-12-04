@@ -14,6 +14,7 @@ exports.signup = catchAsync(async (req, res, next) => {
     const newUser = await User.create({
         name: req.body.name,
         email: req.body.email,
+        role: req.body.role,
         password: req.body.password,
         passwordConfirm: req.body.passwordConfirm
     });
@@ -86,6 +87,78 @@ exports.protect = catchAsync(async (req, res, next) => {
     
     // Grant access to protected route
     req.user = user;
+    next();
+});
 
-next();
+exports.restrictTo = (...roles) => {
+    return (req, res, next) => {
+        // Check if user role matches any of the required roles
+        if(!roles.includes(req.user.role)) {
+            return next(new AppError('Unauthorized to access this route.', 403));
+        }
+        next();
+    };
+};
+
+exports.forgotPassword = catchAsync(async (req, res, next) => {
+    // 1) Get user by email
+    const user = await User.findOne({ email: req.body.email });
+    if(!user) {
+        return next(new AppError('No user found with that email.', 404));
+    }
+    
+    // 2) Generate random token
+    const resetToken = user.createPasswordResetToken();
+    await user.save({ validateBeforeSave: false });
+    
+    // 3) Send email to user with reset token
+    try {
+        const resetURL = `${req.protocol}://${req.get('host')}/api/v1/users/resetPassword/${resetToken}`;
+        await sendEmail({
+            to: user.email,
+            subject: 'Password reset',
+            text: `Please visit this link to reset your password: ${resetURL}`
+        });
+        
+        res.status(200).json({
+            status: 'success',
+            message: 'Reset password email sent.'
+        });
+        
+    } catch(err) {
+        user.resetPasswordToken = undefined;
+        user.resetPasswordExpires = undefined;
+        await user.save({ validateBeforeSave: false });
+        console.error('Error sending email:', err);
+        return next(new AppError('There was an error sending the email. Please try again later.', 500));
+    }
+});
+
+exports.resetPassword = catchAsync(async (req, res, next) => {
+    // 1) Get user by reset token
+    const hashedToken = crypto.createHash('sha256').update(req.params.token).digest('hex');
+    const user = await User.findOne({
+        resetPasswordToken: hashedToken,
+        resetPasswordExpires: { $gt: Date.now() }
+    });
+    
+    // 2) If token is invalid, return error
+    if(!user) {
+        return next(new AppError('Invalid or expired reset password token.', 400));
+    }
+    
+    // 3) Set new password
+    user.password = req.body.password;
+    user.passwordConfirm = req.body.passwordConfirm;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+    await user.save();
+    
+    // 4) Log the user in
+    const token = signToken(user._id);
+    
+    res.status(200).json({
+        status: 'success',
+        token
+    });
 });

@@ -9,6 +9,10 @@ router
 
 router
     .post('/login', authController.login);
+router
+    .post('/forgottPassword', authController.login);
+router
+    .post('/resetPassword', authController.login);
 
 router
     .route('/')
