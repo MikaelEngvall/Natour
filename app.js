@@ -24,7 +24,7 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
-app.use(limiter); // Apply rate limiter
+app.use('/api', limiter); // Apply rate limiter
 app.use(express.static(`${__dirname}/public`));
 
 // Swagger Docs
