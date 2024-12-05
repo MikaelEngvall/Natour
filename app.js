@@ -1,6 +1,7 @@
 const express = require('express');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
+const helmet = require('helmet');
 const swaggerUi = require('swagger-ui-express'); // Add Swagger
 const swaggerDocument = require('./swagger.json'); // Adjust the path if needed
 
@@ -12,6 +13,7 @@ const userRouter = require('./routes/userRoutes');
 const app = express();
 
 // Global Middleware
+app.use(helmet());  //safety first
 
 const limiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
