@@ -28,9 +28,10 @@ if (process.env.NODE_ENV === 'development') {
 
 app.use('/api', limiter); // Apply rate limiter
 
+// Parse JSON bodies
 app.use(express.json({ limit: '10kb' }));
 
-
+// Serving static files from the public directory
 app.use(express.static(`${__dirname}/public`));
 
 // Swagger Docs
