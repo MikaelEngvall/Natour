@@ -27,6 +27,10 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 app.use('/api', limiter); // Apply rate limiter
+
+app.use(express.json({ limit: '10kb' }));
+
+
 app.use(express.static(`${__dirname}/public`));
 
 // Swagger Docs
