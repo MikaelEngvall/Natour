@@ -2,6 +2,8 @@ const express = require('express');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
+const mongoSanitize = require('express-mongo-sanitize');
+const xss = require('xss-clean');
 const swaggerUi = require('swagger-ui-express'); // Add Swagger
 const swaggerDocument = require('./swagger.json'); // Adjust the path if needed
 
@@ -30,6 +32,12 @@ app.use('/api', limiter); // Apply rate limiter
 
 // Parse JSON bodies
 app.use(express.json({ limit: '10kb' }));
+
+// Data sanitization against NoSQL query injection
+app.use(mongoSanitize());
+
+// Data sanitization against xss
+
 
 // Serving static files from the public directory
 app.use(express.static(`${__dirname}/public`));
