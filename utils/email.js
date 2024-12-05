@@ -12,19 +12,13 @@ const sendEmail = async options => {
     });
 
     const mailOptions = {
-        from: 'Mikael Engvall <'+process.env.EMAIL_USERNAME+'>',
+        from: 'Mikael Engvall',
         to: options.email,
         subject: options.subject,
         text: options.message
     };
 
-    await transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-            console.error('Error sending email: ', error);
-        } else {
-            console.log('Email sent: ', info.response);
-        }
-    });
-}
+    await transporter.sendMail(mailOptions)
+};
 
 module.exports = sendEmail;
