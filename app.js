@@ -4,6 +4,8 @@ const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
+const hpp = require('hpp');
+
 const swaggerUi = require('swagger-ui-express'); // Add Swagger
 const swaggerDocument = require('./swagger.json'); // Adjust the path if needed
 
@@ -38,6 +40,13 @@ app.use(mongoSanitize());
 
 // Data sanitization against xss
 app.use(xss());
+
+// Prevent parameter pollution
+
+// Prevent Parameter Polution (HPP) attacks
+app.use(hpp({
+  whitelist: ['duration', 'ratingsQuantity', 'ratingsAverage', 'maxGroupSize', 'difficulty', 'price'] // Allow all headers by default
+})); 
 
 // Serving static files from the public directory
 app.use(express.static(`${__dirname}/public`));
