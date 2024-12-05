@@ -1,5 +1,6 @@
 const express = require('express');
 const morgan = require('morgan');
+const rateLimit = require('express-rate-limit');
 const swaggerUi = require('swagger-ui-express'); // Add Swagger
 const swaggerDocument = require('./swagger.json'); // Adjust the path if needed
 
@@ -10,11 +11,20 @@ const userRouter = require('./routes/userRoutes');
 
 const app = express();
 
-// Middleware
+// Global Middleware
+
+const limiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: 'Too many requests, try again in 1 hour'
+})
+
 app.use(express.json());
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
+
+app.use(limiter); // Apply rate limiter
 app.use(express.static(`${__dirname}/public`));
 
 // Swagger Docs
