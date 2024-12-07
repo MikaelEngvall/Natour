@@ -14,9 +14,13 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Please enter an email'],
         unique: true,
+        lowercase: true,
         validate: [validator.isEmail, 'Please provide a valid email']
     },
-    photo: String,
+    photo: {
+        type: String,
+        default: 'default.jpg'
+    },
     role: {
         type: String,
         enum: ['user', 'guide', 'lead-guide', 'admin'],
@@ -40,7 +44,12 @@ const userSchema = new mongoose.Schema({
     },
     passwordChangedAt: Date,
     passwordResetToken: String,
-    passwordResetExpires: Date
+    passwordResetExpires: Date,
+    active: {
+        type: Boolean,
+        default: true,
+        select: false
+      }
 });
 
 // Middleware to hash password and set passwordChangedAt
