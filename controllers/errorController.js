@@ -43,6 +43,16 @@ const sendErrorDev = (err, res) => {
         }
     };
     
+/**
+ * Global error handling middleware function.
+ * This function processes errors and sends appropriate responses based on the environment.
+ * 
+ * @param {Error} err - The error object to be handled.
+ * @param {Object} req - The request object from Express.
+ * @param {Object} res - The response object from Express.
+ * @param {Function} next - The next middleware function in the Express pipeline.
+ * @returns {void} This function doesn't return a value, it sends a response directly.
+ */
 module.exports = (err, req, res, next) => {
     err.statusCode = err.statusCode || 500;
     err.status = err.status || 'error';
