@@ -1,9 +1,21 @@
-// review, a rating createdAt ref to the tour and to the user who wrote the review
 
 const mongoose = require('mongoose');
 const slugify = require('slugify');
 const validator = require('validator');
+/**
+ * Mongoose schema for the Review model.
+ * @typedef {Object} ReviewSchema
+ * @property {string} review - The content of the review. Required, max 500 characters.
+ * @property {number} rating - The rating given in the review. Required, between 1 and 5.
+ * @property {Date} createdAt - The date the review was created. Defaults to current date.
+ * @property {mongoose.Schema.ObjectId} tour - Reference to the Tour model. Required.
+ * @property {mongoose.Schema.ObjectId} user - Reference to the User model. Required.
+ */
 
+/**
+ * Creates and exports the Review model based on the ReviewSchema.
+ * @type {mongoose.Model}
+ */
 const reviewSchema = new mongoose.Schema({
     review: {
         type: String,
@@ -36,6 +48,11 @@ const reviewSchema = new mongoose.Schema({
         toObject: { virtuals: true }
     }
 );
+
+/**
+ * Middleware to populate tour and user fields before any find query.
+ * @param {Function} next - The next middleware function in the stack.
+ */
 reviewSchema.pre(/^find/, function(next) {
     this.populate({
         path: 'tour',
@@ -45,13 +62,16 @@ reviewSchema.pre(/^find/, function(next) {
         select: 'name photo'
     });
     next();
-  });
+});
 
+/**
+ * Middleware to create a slug from the review content before saving.
+ * @param {Function} next - The next middleware function in the stack.
+ */
 reviewSchema.pre('save', function (next) {
     this.slug = slugify(this.review, { lower: true });
     next();
 });
 
-// const Review = mongoose.model('Review', reviewSchema);
-
 module.exports = mongoose.model('Review', reviewSchema);
+
