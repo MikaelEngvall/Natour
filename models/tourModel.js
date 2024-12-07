@@ -114,30 +114,61 @@ const tourSchema = new mongoose.Schema({
     toJSON: { virtuals: true },
     toObject: { virtuals: true }
 }
+
 );
+/**
+ * Calculates the duration of the tour in weeks.
+ * This is a virtual property that is not stored in the database but calculated on-the-fly.
+ * 
+ * @returns {number} The duration of the tour in weeks, calculated by dividing the duration (in days) by 7.
+ */
 tourSchema.virtual('durationWeeks').get(function(){
     return this.duration / 7;
 });
+
 // Document middleware: runs before .save() and .create()
+/**
+ * Middleware function that runs before saving a tour document.
+ * It creates a slug from the tour name and sets it to the 'slug' field.
+ *
+ * @param {Function} next - The next middleware function in the stack.
+ * @returns {void}
+ */
 tourSchema.pre('save', function(next) {
     this.slug = slugify(this.name, { lower: true });
     next();
 });
 
+
+/**
+ * Middleware function that runs before any find query on the Tour model.
+ * It filters out secret tours and sets a start time for the query.
+ *
+ * @param {Function} next - The next middleware function in the stack.
+ * @returns {void}
+ */
 tourSchema.pre(/^find/, function(next) {
     this.find({ secretTour: { $ne: true } });
     this.start = Date.now();
     next();
-  });
+});
 
+/**
+ * Middleware function that runs before any find query on the Tour model.
+ * It populates the 'guides' field with user data, excluding '__v' and 'passwordChangedAt' fields.
+ *
+ * @param {Function} next - The next middleware function in the stack.
+ * @returns {void}
+ */
 tourSchema.pre(/^find/, function(next) {
     this.populate({
       path: 'guides',
       select: '-__v -passwordChangedAt'
     });
-  
+
     next();
   });
+
 
 //Embedding
 /* tourSchema.pre('save', async function(next) {
@@ -147,11 +178,27 @@ tourSchema.pre(/^find/, function(next) {
 }); */
 
 // Referencing
+/**
+ * Middleware function that runs after any find query on the Tour model.
+ * It logs a message to the console when a new tour is created.
+ *
+ * @param {Object} doc - The document that was just created or found.
+ * @param {Function} next - The next middleware function in the stack.
+ * @returns {void}
+ */
 tourSchema.post('/^find/', function(doc, next) {
     console.log(`New tour created: ${doc.name}`);
     next();
 });
 
+
+/**
+ * Middleware function that runs before any find query on the Tour model.
+ * It populates the 'guides' field with user data, excluding '__v' and 'passwordChangedAt' fields.
+ *
+ * @param {Function} next - The next middleware function in the stack.
+ * @returns {void}
+ */
 tourSchema.pre(/^find/, function(next) {
     this.populate({
         path: 'guides',
@@ -160,10 +207,19 @@ tourSchema.pre(/^find/, function(next) {
     next();
 })
 
+
+/**
+ * Middleware function that runs before any aggregation operation on the Tour model.
+ * It adds a $match stage to the aggregation pipeline to filter out secret tours.
+ *
+ * @param {Function} next - The next middleware function in the stack.
+ * @returns {void}
+ */
 tourSchema.pre('aggregate', function(next) {
     this.pipeline().match({ secretTour: { $ne: true} });
     next();
 });
+
 
 
 const Tour = mongoose.model('Tour', tourSchema);
