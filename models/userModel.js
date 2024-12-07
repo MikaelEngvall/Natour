@@ -52,7 +52,14 @@ const userSchema = new mongoose.Schema({
       }
 });
 
-// Middleware to hash password and set passwordChangedAt
+/**
+ * Middleware function to hash the user's password before saving to the database.
+ * This function is executed before the 'save' operation on the user document.
+ * It only runs if the password field has been modified.
+ *
+ * @param {Function} next - The next middleware function in the stack.
+ * @returns {void}
+ */
 userSchema.pre('save', async function (next) {
     if (!this.isModified('password')) return next();
 
@@ -62,7 +69,14 @@ userSchema.pre('save', async function (next) {
     next();
 });
 
-// Middleware to handle updates
+
+/**
+ * Middleware function executed before a findOneAndUpdate operation on the user document.
+ * It updates the passwordChangedAt field if the password is being updated.
+ *
+ * @param {Function} next - The next middleware function in the stack.
+ * @returns {void}
+ */
 userSchema.pre('findOneAndUpdate', function (next) {
     if (this._update.password) {
         this._update.passwordChangedAt = Date.now() - 1000;
@@ -70,7 +84,14 @@ userSchema.pre('findOneAndUpdate', function (next) {
     next();
 });
 
-// Instance method to check if password was changed after token issued
+
+/**
+ * Checks if the user's password was changed after a given timestamp.
+ * This method is used to determine if a JWT token is still valid based on when it was issued.
+ *
+ * @param {number} JWTTimestamp - The timestamp of when the JWT was issued (in seconds).
+ * @returns {boolean} Returns true if the password was changed after the JWT was issued, false otherwise.
+ */
 userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
     if (this.passwordChangedAt) {
         const changedTimestamp = parseInt(this.passwordChangedAt.getTime() / 1000, 10);
@@ -79,11 +100,31 @@ userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
     return false;
 };
 
+
 // Instance method to compare passwords
+/**
+ * Compares a candidate password with the user's hashed password.
+ * This method is used for password verification during authentication.
+ *
+ * @async
+ * @param {string} candidatePassword - The password provided by the user during login attempt.
+ * @param {string} userPassword - The hashed password stored in the database for the user.
+ * @returns {Promise<boolean>} A promise that resolves to true if the passwords match, false otherwise.
+ */
 userSchema.methods.correctPassword = async function (candidatePassword, userPassword) {
     return await bcrypt.compare(candidatePassword, userPassword);
 };
 
+
+/**
+ * Creates a password reset token for the user.
+ * This method generates a random token, hashes it, and stores the hash in the user document.
+ * It also sets an expiration time for the token.
+ *
+ * @function
+ * @memberof userSchema.methods
+ * @returns {string} The unhashed reset token to be sent to the user.
+ */
 userSchema.methods.createPasswordResetToken = function(){
     const resetToken = crypto.randomBytes(32).toString('hex');
     this.passwordResetToken = crypto
@@ -98,6 +139,7 @@ userSchema.methods.createPasswordResetToken = function(){
 
     return resetToken;
 };
+
 
 const User = mongoose.model('User', userSchema);
 
