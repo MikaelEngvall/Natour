@@ -10,6 +10,8 @@ router.post('/login', authController.login);
 router.post('/forgottPassword', authController.forgotPassword);
 router.patch('/resetPassword/:token', authController.resetPassword);
 
+// From now on all are protected by JWT middleware 
+// (only authenticated users can access this route)
 router.use(authController.protect);
 
 router
@@ -23,6 +25,10 @@ router
         userController.getMe, 
         userController.getUser
     );
+
+// only admin can access this route
+router.use(authController.restrictTo('admin')); 
+
 router
     .route('/')
     .get(userController.getAllUsers);
