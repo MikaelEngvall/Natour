@@ -19,90 +19,13 @@ exports.getReview = catchAsync(async (req, res, next) => {
     });
 });
 
-exports.getReviewsByTour = catchAsync(async (req, res, next) => {
-    const reviews = await Review.find({ tour: req.params.id });
-    if(!reviews) return next(new AppError(`No reviews found for tour with id ${req.params.id}`, 404));
-    res.status(200).json({
-        status:'success',
-        results: reviews.length,
-        data: { reviews }
-    });
-});
-
-exports.getTopReviews = catchAsync(async (req, res, next) => {
-    const reviews = await Review.find()
-       .sort({ rating: -1 })
-       .limit(parseInt(req.query.limit))
-       .skip(parseInt(req.query.skip));
-       if(!reviews) return next(new AppError('No reviews found', 404));
-       res.status(200).json({
-        status:'success',
-        results: reviews.length,
-        data: { reviews }
-    });
-});
-
-exports.getReviewStats = catchAsync(async (req, res, next) => {
-    const stats = await Review.aggregate([
-        {
-            $group: {
-                _id: null,
-                numReviews: { $sum: 1 },
-                avgRating: { $avg: '$rating' }
-            }
-        }
-    ]);
-    res.status(200).json({
-        status:'success',
-        data: stats[0]
-    });
-});
-
-exports.getReviewByUser = catchAsync(async (req, res, next) => {
-    const reviews = await Review.find({ user: req.params.id });
-    if(!reviews) return next(new AppError(`No reviews found for user with id ${req.params.id}`, 404));
-    res.status(200).json({
-        status:'success',
-        results: reviews.length,
-        data: { reviews }
-    });
-});
-
-exports.createReviewComment = catchAsync(async (req, res, next) => {
-    const review = await Review.findByIdAndUpdate(req.params.reviewId, {
-        $push: { comments: req.body }
-    }, { new: true });
-    if(!review) return next(new AppError(`Review with id ${req.params.reviewId} not found`, 404));
-    res.status(200).json({
-        status:'success',
-        data: { review }
-    });
-});
-
-exports.deleteReviewComment = catchAsync(async (req, res, next) => {
-    const review = await Review.findByIdAndUpdate(req.params.reviewId, {
-        $pull: { comments: { _id: req.params.commentId } }
-    }, { new: true });
-    if(!review) return next(new AppError(`Review with id ${req.params.reviewId} not found`, 404));
-    res.status(200).json({
-        status:'success',
-        data: { review }
-    });
-});
-
-exports.updateReviewComment = catchAsync(async (req, res, next) => {
-    const review = await Review.findByIdAndUpdate(req.params.reviewId, {
-        $set: { 'comments.$': req.body }
-    }, { new: true });
-    if(!review) return next(new AppError(`Review with id ${req.params.reviewId} not found`, 404));
-    res.status(200).json({
-        status:'success',
-        data: { review }
-    });
-});
-
 exports.createReview = catchAsync(async (req, res, next) => {
+    // Allows nested routes
+    if(!req.body.tour) req.body.tour = req.params.tourId;
+    if(!req.body.user) req.body.user = req.user.id;
     const newReview= await Review.create(req.body);
+    console.log(req.body.tour);
+    console.log(req.body.user);
     res.status(201).json({
         status:'success',
         data: { review: newReview }

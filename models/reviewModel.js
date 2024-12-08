@@ -3,16 +3,6 @@ const mongoose = require('mongoose');
 const slugify = require('slugify');
 const validator = require('validator');
 /**
- * Mongoose schema for the Review model.
- * @typedef {Object} ReviewSchema
- * @property {string} review - The content of the review. Required, max 500 characters.
- * @property {number} rating - The rating given in the review. Required, between 1 and 5.
- * @property {Date} createdAt - The date the review was created. Defaults to current date.
- * @property {mongoose.Schema.ObjectId} tour - Reference to the Tour model. Required.
- * @property {mongoose.Schema.ObjectId} user - Reference to the User model. Required.
- */
-
-/**
  * Creates and exports the Review model based on the ReviewSchema.
  * @type {mongoose.Model}
  */
@@ -77,6 +67,11 @@ reviewSchema.pre('save', function (next) {
     this.slug = slugify(this.review, { lower: true });
     next();
 });
+
+// POST /tour/934ur8934/reviews
+// GET /tour/934ur8934/reviews
+// GET /tour/934ur8934/reviews/3099032hf
+
 
 module.exports = mongoose.model('Review', reviewSchema);
 
