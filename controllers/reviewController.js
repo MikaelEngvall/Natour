@@ -37,16 +37,5 @@ exports.createReview = catchAsync(async (req, res, next) => {
     });
 });
 
-exports.updateReview = catchAsync(async (req, res, next) => {
-    const review = await Review.findByIdAndUpdate(req.params.id, req.body, {
-        new: true,
-        runValidators: true
-    });
-    if(!review) return next(new AppError(`Review with id ${req.params.id} not found`, 404));
-    res.status(200).json({
-        status:'success',
-        data: { review }
-    });
-});
-
+exports.updateReview = factory.updateOne(Review);
 exports.deleteReview = factory.deleteOne(Review);
