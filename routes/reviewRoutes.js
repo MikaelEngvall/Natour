@@ -7,7 +7,8 @@ const reviewController = require('./../controllers/reviewController');
 const router = express.Router({ mergeParams: true });
 
 // POST /tour/039498fvjk/reviews
-// POST /reviews 
+// GET /tour/039498fvjk/reviews
+// POST /reviews
 
 router
 .route('/')
