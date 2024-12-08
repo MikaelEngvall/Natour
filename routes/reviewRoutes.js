@@ -1,10 +1,16 @@
 // create the routes for reviews
 const express = require('express');
-const router = express.Router();
+
 const authController = require('./../controllers/authController');
 const reviewController = require('./../controllers/reviewController');
 
-router.route('/')
+const router = express.Router({ mergeParams: true });
+
+// POST /tour/039498fvjk/reviews
+// POST /reviews 
+
+router
+.route('/')
 .get(reviewController.getAllReviews)
 .post(
     authController.protect,
