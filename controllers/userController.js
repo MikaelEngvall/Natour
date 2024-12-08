@@ -1,6 +1,5 @@
 const User = require('./../models/userModel');
 const catchAsync = require('./../utils/catchAsync');
-const AppError = require('./../utils/appError');
 const factory = require('./handlerFactory');
 
 exports.deleteMe = catchAsync(async (req, res, next) => {
@@ -13,16 +12,7 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
 });
 
 
-exports.getAllUsers = catchAsync(async (req, res, next) => {
-    const users = await User.find();
-
-    res.status(200).json({
-        status: 'success',
-        results: users.length,
-        data: { users }
-    });
-});
-
+exports.getAllUsers = factory.getAll(User);
 exports.getUser = factory.getOne(User);
 // DO NOT update passwords with this
 exports.updateUser = factory.updateOne(User);
