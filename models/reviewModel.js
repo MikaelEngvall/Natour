@@ -49,15 +49,23 @@ const reviewSchema = new mongoose.Schema({
     }
 );
 
-/**
- * Middleware to populate tour and user fields before any find query.
- * @param {Function} next - The next middleware function in the stack.
- */
 reviewSchema.pre(/^find/, function(next) {
     this.populate({
         path: 'tour',
         select: 'name'
     }).populate({
+        path: 'user',
+        select: 'name photo'
+    });
+    next();    
+})
+
+/**
+ * Middleware to populate tour and user fields before any find query.
+ * @param {Function} next - The next middleware function in the stack.
+ */
+reviewSchema.pre(/^find/, function(next) {
+   this.populate({
         path: 'user',
         select: 'name photo'
     });
