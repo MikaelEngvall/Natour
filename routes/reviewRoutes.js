@@ -20,9 +20,9 @@ router
     );
 
 router
-.route('/:id')
-.patch(reviewController.updateReview)
-.delete(reviewController.deleteReview);
+    .route('/:id')
+    .patch(reviewController.updateReview)
+    .delete(reviewController.deleteReview);
 
   
 module.exports = router;
