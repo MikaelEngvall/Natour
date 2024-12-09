@@ -27,21 +27,26 @@ Natours is a comprehensive tour management system that allows users to browse, b
 ## Installation
 
 1. Clone the repository:
+
+      `git clone https://github.com/MikaelEngvall/Natour.git`
+
 2. Navigate to the project directory:
 
+      `cd Natour`
+
 3. Install dependencies:
+
+      `npm install`
 
 4. Set up your environment variables in a `.env` file (see `.env.example` for required variables)
 
 5. Start the server:
 
+      `npm start`
+
 ## API Documentation
 
 API documentation is available via Swagger. After starting the server, visit `http://localhost:3000/api-docs` to view the interactive API documentation.
-
-## Testing
-
-Run the test suite with:
 
 ## Contributing
 
