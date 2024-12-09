@@ -28,7 +28,7 @@ Natours is a comprehensive tour management system that allows users to browse, b
 
 1. Clone the repository:
 
-  `git clone https://github.com/MikaelEngvall/Natour.git`
+      `git clone https://github.com/MikaelEngvall/Natour.git`
 
 2. Navigate to the project directory:
 
