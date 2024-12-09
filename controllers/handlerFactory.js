@@ -58,7 +58,7 @@ exports.getAll = Model => catchAsync(async (req, res, next) => {
         .sort()
         .limitFields()
         .paginate();
-    const doc = await features.query;
+    const doc = await features.query; //.explain(); // Uncomment to include query plan in response body
 
     res.status(200).json({
         status: 'success',

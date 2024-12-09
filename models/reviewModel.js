@@ -2,6 +2,8 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
 const validator = require('validator');
+
+const Tour = require('./tourModel');
 /**
  * Creates and exports the Review model based on the ReviewSchema.
  * @type {mongoose.Model}
@@ -68,10 +70,31 @@ reviewSchema.pre('save', function (next) {
     next();
 });
 
-// POST /tour/934ur8934/reviews
-// GET /tour/934ur8934/reviews
-// GET /tour/934ur8934/reviews/3099032hf
+reviewSchema.statics.calculateAverageRatings = async function(tourId) {
+    const stats = await this.aggregate([
+        {
+            $match: { tour: tourId }
+        },
+        {
+            $group: {
+                _id: '$tour',
+                nRating: { $sum: 1 },
+                avgRating: { $avg: '$rating' }
+            }
+        }
+    ]);
+    console.log(stats);
 
+    await Tour.findByIdAndUpdate(tourId, { 
+        ratingsQuantity: stats[0].nRating, 
+        ratingsAverage: stats[0].avgRating 
+    });
+};
+
+reviewSchema.post('save', function() {
+   // if (!this.isModified('rating')) return next();
+    this.constructor.calculateAverageRatings(this.tour);
+})
 
 module.exports = mongoose.model('Review', reviewSchema);
 
