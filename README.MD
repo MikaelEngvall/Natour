@@ -32,6 +32,8 @@ Natours is a comprehensive tour management system that allows users to browse, b
 
 2. Navigate to the project directory:
 
+      `cd Natour`
+
 3. Install dependencies:
 
 4. Set up your environment variables in a `.env` file (see `.env.example` for required variables)
