@@ -1,5 +1,6 @@
 const Tour = require('../models/tourModel');
 const catchAsync = require('../utils/catchAsync');
+const AppError = require('../utils/appError');
 
 exports.getOverview = catchAsync( async (req, res) => {
   // 1) Get all the tour data from the database
@@ -12,9 +13,22 @@ exports.getOverview = catchAsync( async (req, res) => {
   });
 });
 
-exports.getTour = (req, res) => {
+exports.getTour = catchAsync( async (req, res) => {
+  // 1) Find the tour by id
+  const tour = await Tour.findOne({ slug: req.params.slug }).populate({
+    path: 'reviews',
+    fields: 'review rating user'
+  });
+  console.log(tour);
+  // 2) Check if the tour exists
+  if (!tour) {
+    return next(new AppError('There is no tour with that name.', 404));
+  }
+  // 3) Render the tour page with the tour data
+  
     res.status(200).render('tour', { 
-      title: 'All tours' 
+      title: `${tour.name} Tour`,
+      tour 
     });
-};
+});
 
