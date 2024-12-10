@@ -6,7 +6,7 @@ Natours is a tour booking application built with Node.js, Express, and MongoDB.
 
 Natours is a comprehensive tour management system that allows users to browse, book, and review tours. It includes features such as user authentication, tour management, booking system, and review functionality.
 
-<img src="https://github.com/MikaelEngvall/Natour/blob/main/Natours.png" width="700" height="400" />
+<img src="https://github.com/MikaelEngvall/Natour/blob/main/Natours.png" width="800" height="400" />
 
 ## Features
 
