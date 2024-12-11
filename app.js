@@ -27,9 +27,18 @@ app.set('views', path.join(__dirname, './views'));
 app.use(express.static(path.join(__dirname, '/public')));
 
 app.use(helmet());
-app.use(helmet({
-  crossOriginEmbedderPolicy: false,
-  contentSecurityPolicy: {
+app.use(helmet.dnsPrefetchControl());
+app.use(helmet.frameguard());
+app.use(helmet.hidePoweredBy());
+app.use(helmet.hsts());
+app.use(helmet.ieNoOpen());
+app.use(helmet.noSniff());
+app.use(helmet.originAgentCluster());
+app.use(helmet.permittedCrossDomainPolicies());
+app.use(helmet.referrerPolicy());
+app.use(helmet.xssFilter());
+app.use(
+  helmet.contentSecurityPolicy({
     directives: {
       'child-src': ['blob:'],
       'connect-src': ['https://*.mapbox.com'],
@@ -37,11 +46,11 @@ app.use(helmet({
       'font-src': ["'self'", 'https://fonts.gstatic.com'],
       'img-src': ["'self'", 'data:', 'blob:'],
       'script-src': ["'self'", 'https://*.mapbox.com'],
-      'style-src': ["'self'", 'https:'],
-      'worker-src': ['blob:']
-    }
-  }
-}));
+      'style-src': ["'self'", "'unsafe-inline'", 'https:'],
+      'worker-src': ['blob:'],
+    },
+  })
+);
 
 const limiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
