@@ -6,30 +6,20 @@ const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
 const factory = require('./handlerFactory');
 
-/**
- * Generates a JSON Web Token (JWT) for a given user ID.
- *
- * @param {string} id - The unique identifier of the user.
- * @returns {string} A signed JWT containing the user's ID, encrypted with the secret key and set to expire as per the environment configuration.
- */
 const signToken = id => {
     return jwt.sign({ id }, process.env.JWT_SECRET, { 
-        expiresIn: process.env.JWT_EXPIRES_IN 
+        expiresIn: process.env.JWT_EXPIRES_IN * 24 * 60 * 60 * 1000
          });
 }
 
-
-/**
- * Creates and sends a JWT token in the response.
- * 
- * @param {Object} user - The user object for whom the token is being created.
- * @param {number} statusCode - The HTTP status code to be set in the response.
- * @param {Object} res - The response object to send the token and user data.
- * @returns {void} This function doesn't return anything, it sends the response directly.
- */
 const createSendToken = (user, statusCode, res) => {
     const token = signToken(user._id);
-
+/*     console.log('Token sent to client', token);
+    console.log('User data sent to client', user); */
+    res.cookie('jwt', token, { 
+        expires: new Date(Date.now() + process.env.JWT_EXPIRES_IN * 24 * 60 * 60 * 1000), 
+        httpOnly: true }
+    );
     res.status(statusCode).json({
         status: 'success',
         token,
@@ -39,24 +29,6 @@ const createSendToken = (user, statusCode, res) => {
     });
 }
 
-
-/**
- * Handles user signup process.
- * Creates a new user in the database and sends a JWT token upon successful registration.
- *
- * @async
- * @function signup
- * @param {Object} req - Express request object
- * @param {Object} req.body - Request body containing user details
- * @param {string} req.body.name - User's name
- * @param {string} req.body.email - User's email address
- * @param {string} req.body.role - User's role
- * @param {string} req.body.password - User's password
- * @param {string} req.body.passwordConfirm - Password confirmation
- * @param {Object} res - Express response object
- * @param {function} next - Express next middleware function
- * @returns {void} Doesn't return anything, sends response via createSendToken
- */
 exports.signup = catchAsync(async (req, res, next) => {
 
     const newUser = await User.create({
@@ -72,6 +44,8 @@ exports.signup = catchAsync(async (req, res, next) => {
 
 exports.login = catchAsync( async (req, res, next) => {
     const { email, password } = req.body;
+
+    console.log('Cookies: in login function: ', req.cookies);
 
     // 1) check if email and password exist
     if(!email ||!password) {
@@ -125,13 +99,6 @@ exports.protect = catchAsync(async (req, res, next) => {
     next();
 });
 
-/**
- * Creates a middleware function that restricts access to specific user roles.
- * 
- * @param {...string} roles - The roles allowed to access the route.
- * @returns {function} A middleware function that checks if the user's role is included in the allowed roles.
- * @throws {AppError} If the user's role is not included in the allowed roles, it throws an unauthorized access error.
- */
 exports.restrictTo = (...roles) => {
     return (req, res, next) => {
         // Check if user role matches any of the required roles
