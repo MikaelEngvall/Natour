@@ -21,12 +21,12 @@ const reviewRouter = require('./routes/reviewRoutes');
 const viewRouter = require('./routes/viewRoutes');
 const app = express();
 
-app.use(cors({
+/* app.use(cors({
   origin: 'http://127.0.0.1:3000', // Replace with your frontend URL
   methods: 'GET,POST,PUT,DELETE', // Adjust the methods as needed
   allowedHeaders: 'Content-Type, Authorization', // Adjust headers if needed
   credentials: true, // If you're using cookies or authentication
-}));
+})); */
 
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, './views'));
@@ -36,7 +36,8 @@ app.set('views', path.join(__dirname, './views'));
 app.use(express.static(path.join(__dirname, '/public')));
 
 app.use(helmet());
-app.use(helmet.dnsPrefetchControl());
+
+/* app.use(helmet.dnsPrefetchControl());
 app.use(helmet.frameguard());
 app.use(helmet.hidePoweredBy());
 app.use(helmet.hsts());
@@ -45,7 +46,7 @@ app.use(helmet.noSniff());
 app.use(helmet.originAgentCluster());
 app.use(helmet.permittedCrossDomainPolicies());
 app.use(helmet.referrerPolicy());
-app.use(helmet.xssFilter());
+app.use(helmet.xssFilter()); */
 app.use(
   helmet.contentSecurityPolicy({
     directives: {
