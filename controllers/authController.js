@@ -14,8 +14,6 @@ const signToken = id => {
 
 const createSendToken = (user, statusCode, res) => {
     const token = signToken(user._id);
-/*     console.log('Token sent to client', token);
-    console.log('User data sent to client', user); */
     res.cookie('jwt', token, { 
         expires: new Date(Date.now() + process.env.JWT_EXPIRES_IN * 24 * 60 * 60 * 1000), 
         httpOnly: true }
@@ -45,7 +43,7 @@ exports.signup = catchAsync(async (req, res, next) => {
 exports.login = catchAsync( async (req, res, next) => {
     const { email, password } = req.body;
 
-    console.log('Cookies: in login function: ', req.cookies);
+    console.log('Cookies: in login function: in authController ', req.cookies);
 
     // 1) check if email and password exist
     if(!email ||!password) {
