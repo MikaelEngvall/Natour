@@ -1,12 +1,6 @@
 header.header
     nav.nav.nav--tours
         a.nav__el(href="/") All tours
-        form.nav__search
-            button.nav__search-btn
-                svg
-                    use(xlink:href="/img/icons.svg#icon-search")
-            input.nav__search-input(type="text" placeholder="Search tours")
-
     .header__logo
         img(src="/img/logo-white.png" alt="Natours logo")
 
@@ -19,3 +13,5 @@ header.header
         else
             a.nav__el(href='/login') Log in
             a.nav__el.nav__el--cta(href='/signup') Sign up
+
+

@@ -3,14 +3,16 @@ const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 
 exports.getOverview = catchAsync(async (req, res, next) => {
-  // 1) Get all the tour data from the database
+  // Get tour data from collection
   const tours = await Tour.find();
-  // 2) Build template
-  // 3) Render that template using tour data from 1)
+
+  // Render that template using tour data from 1)
   res.status(200).render('overview', {
     title: 'All Tours',
     tours,
+    user: res.locals.user, // Make sure this line is present
   });
+  console.log('User in getOverview:', res.locals.user);
 });
 
 exports.getTour = catchAsync(async (req, res, next) => {
