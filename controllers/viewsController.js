@@ -12,7 +12,6 @@ exports.getOverview = catchAsync(async (req, res, next) => {
     tours,
     user: res.locals.user, // Make sure this line is present
   });
-  console.log('User in getOverview:', res.locals.user);
 });
 
 exports.getTour = catchAsync(async (req, res, next) => {

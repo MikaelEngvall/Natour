@@ -108,38 +108,25 @@ exports.protect = catchAsync(async (req, res, next) => {
 });
 
 exports.isLoggedIn = catchAsync(async (req, res, next) => {
-  console.log('isLoggedIn middleware called');
-  console.log('Cookies:', req.cookies);
   if (req.cookies.jwt) {
-    try {
-      // 1) Verify token
-      const decoded = jwt.verify(req.cookies.jwt, process.env.JWT_SECRET);
+    // 1) Verify token
+    const decoded = jwt.verify(req.cookies.jwt, process.env.JWT_SECRET);
 
-      console.log('Token decoded:', decoded);
-      // 2) Check if user still exists
-      const currentUser = await User.findById(decoded.id);
-      if (!currentUser) {
-        console.log('No user found');
-        return next();
-      }
-
-      console.log('User found:', currentUser);
-      // 3) Check if user changed password after the token was issued
-      if (currentUser.changedPasswordAfter(decoded.iat)) {
-        console.log('Password changed after token issued');
-        return next();
-      }
-
-      // There is a logged in user
-      res.locals.user = currentUser;
-      console.log('User set in res.locals:', res.locals.user);
-      return next();
-    } catch (err) {
-      console.error('Error in isLoggedIn:', err);
+    // 2) Check if user still exists
+    const currentUser = await User.findById(decoded.id);
+    if (!currentUser) {
       return next();
     }
+
+    // 3) Check if user changed password after the token was issued
+    if (currentUser.changedPasswordAfter(decoded.iat)) {
+      return next();
+    }
+
+    // There is a logged in user
+    res.locals.user = currentUser;
+    return next();
   }
-  console.log('No JWT cookie found');
   next();
 });
 
