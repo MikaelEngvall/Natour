@@ -16,7 +16,6 @@ header.header
             a.nav__el(href="#")
                 img.nav__user-img(src=`/img/users/${user.photo}` alt=`Photo of ${user.name}`)
                 span= user.name.split(' ')[0]
-        //- Uncomment below buttons if needed
         else
             a.nav__el(href='/login') Log in
             a.nav__el.nav__el--cta(href='/signup') Sign up
