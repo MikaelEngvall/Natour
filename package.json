@@ -5,7 +5,9 @@
   "scripts": {
     "start": "cross-env NODE_ENV=development nodemon server.js",
     "start:prod": "cross-env NODE_ENV=production nodemon server.js",
-    "debug": "ndb server.js"
+    "debug": "ndb server.js",
+    "watch:js": "parcel watch public/js/index.js --out-dir public/js --out-file bundle.js",
+    "build:js": "parcel watch public/js/index.js --out-dir public/js --out-file bundle.js"
   },
   "repository": {
     "type": "git",
@@ -39,6 +41,7 @@
   },
   "devDependencies": {
     "cross-env": "^7.0.3",
-    "ndb": "^0.2.4"
+    "ndb": "^0.2.4",
+    "parcel-bundler": "^1.12.5"
   }
 }
