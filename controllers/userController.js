@@ -118,3 +118,12 @@ exports.createUser = (req, res) => {
 exports.updateUser = factory.updateOne(User);
 
 exports.deleteUser = factory.deleteOne(User);
+
+exports.manageUsers = catchAsync(async (req, res, next) => {
+  const users = await User.find();
+
+  res.status(200).render('manageUsers', {
+    title: 'Manage Users',
+    users
+  });
+});

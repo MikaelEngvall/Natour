@@ -31,6 +31,13 @@ router.patch(
 );
 router.delete('/deleteMe', userController.deleteMe);
 
+router.get(
+  '/manage-users',
+  authController.protect,
+  authController.restrictTo('admin'),
+  userController.manageUsers
+);
+
 router.use(authController.restrictTo('admin'));
 
 router

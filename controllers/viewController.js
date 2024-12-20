@@ -87,3 +87,11 @@ exports.updateUserData = catchAsync(async (req, res, next) => {
     user: updatedUser
   });
 });
+exports.getManageUsersPage = catchAsync(async (req, res, next) => {
+  const users = await User.find();
+
+  res.status(200).render('manageUsers', {
+    title: 'Manage Users',
+    users
+  });
+});

@@ -1,11 +1,8 @@
 const express = require('express');
 const viewController = require('../controllers/viewController');
 const authController = require('../controllers/authController');
-// const bookingController = require('../controllers/bookingController');
 
 const router = express.Router();
-
-router.use(viewController.alerts);
 
 router.get(
   '/',
@@ -28,4 +25,10 @@ router.post(
   viewController.updateUserData
 );
 
+router.get(
+  '/manage-users',
+  authController.protect,
+  authController.restrictTo('admin'),
+  viewController.getManageUsersPage
+);
 module.exports = router;
