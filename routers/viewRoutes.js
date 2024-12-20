@@ -31,4 +31,11 @@ router.get(
   authController.restrictTo('admin'),
   viewController.getManageUsersPage
 );
+
+router.get(
+  '/manage-reviews',
+  authController.protect,
+  authController.restrictTo('admin'),
+  viewController.getManageReviewsPage
+);
 module.exports = router;

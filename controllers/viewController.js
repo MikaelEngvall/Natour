@@ -1,6 +1,7 @@
 const Tour = require('../models/tourModel');
 const User = require('../models/userModel');
 const Booking = require('../models/bookingModel');
+const Review = require('../models/reviewModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 
@@ -93,5 +94,22 @@ exports.getManageUsersPage = catchAsync(async (req, res, next) => {
   res.status(200).render('manageUsers', {
     title: 'Manage Users',
     users
+  });
+});
+
+exports.getManageReviewsPage = catchAsync(async (req, res, next) => {
+  const reviews = await Review.find()
+    .populate({
+      path: 'user',
+      select: 'name photo'
+    })
+    .populate({
+      path: 'tour',
+      select: 'name'
+    });
+
+  res.status(200).render('manageReviews', {
+    title: 'Manage Reviews',
+    reviews
   });
 });
