@@ -3,19 +3,30 @@ import axios from 'axios';
 import { showAlert } from './alerts';
 
 export const bookTour = async tourId => {
-  // 1) Get checkout session from API
-  const stripe = Stripe(
-    'pk_test_51QW3qOFmUcckFLm4YwmyldApnjbIqujmsCYXsIWrEANImlFbEbHHUaq3LOndDM2iSooiw53aetvLbD1lmJr3Gqah001lEypxPg'
-  );
   try {
+    // 1) Get checkout session from API
     const session = await axios(`/api/v1/bookings/checkout-session/${tourId}`);
-    // console.log(session);
-    // 2) Create checkout form  + change credit card
-    await stripe.redirectToCheckout({
+
+    if (!session.data.session || !session.data.session.id) {
+      throw new Error('Invalid session data received from the server');
+    }
+
+    // 2) Create Stripe instance
+    const stripe = Stripe(session.data.stripePublicKey); // Assuming you're sending the public key from the server
+
+    // 3) Redirect to Stripe checkout
+    const result = await stripe.redirectToCheckout({
       sessionId: session.data.session.id
     });
+
+    if (result.error) {
+      throw new Error(result.error.message);
+    }
   } catch (err) {
-    console.log(err);
-    showAlert('error', err);
+    console.error('Stripe checkout error:', err);
+    showAlert(
+      'error',
+      err.message || 'An error occurred during checkout. Please try again.'
+    );
   }
 };
