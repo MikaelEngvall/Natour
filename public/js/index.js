@@ -4,6 +4,7 @@ import '@babel/polyfill';
 import { displayMap } from './mapbox';
 import { login, logout } from './login';
 import { updateSettings } from './updateSettings';
+import { editTour, deleteTour } from './editTour';
 import { bookTour } from './stripe';
 import { showAlert } from './alerts';
 
@@ -15,6 +16,7 @@ const userDataForm = document.querySelector('.form-user-data');
 const userPasswordForm = document.querySelector('.form-user-settings');
 const bookBtn = document.getElementById('book-tour');
 const alertMessage = document.querySelector('body').dataset.alert;
+const tourForm = document.querySelector('.form-tour-data');
 
 // DELEGATION
 if (mapBox) {
@@ -23,7 +25,7 @@ if (mapBox) {
 }
 
 if (loginForm) {
-  document.querySelector('.form').addEventListener('submit', e => {
+  loginForm.addEventListener('submit', e => {
     e.preventDefault();
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
@@ -68,3 +70,27 @@ if (bookBtn)
     bookTour(tourId);
   });
 if (alertMessage) showAlert('success', alertMessage, 20);
+if (tourForm)
+  tourForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const tourId = document.getElementById('tour-id').value;
+    const name = document.getElementById('name').value;
+    const price = document.getElementById('price').value;
+    const duration = document.getElementById('duration').value;
+    // Add other fields as necessary
+
+    editTour(tourId, { name, price, duration });
+  });
+// Add event listeners after the DOM is fully loaded
+document.addEventListener('DOMContentLoaded', () => {
+  const deleteButtons = document.querySelectorAll('.btn-delete-tour');
+  deleteButtons.forEach(btn => {
+    btn.addEventListener('click', async e => {
+      e.preventDefault();
+      const tourId = e.target.dataset.tourId;
+      if (confirm('Are you sure you want to delete this tour?')) {
+        await deleteTour(tourId);
+      }
+    });
+  });
+});

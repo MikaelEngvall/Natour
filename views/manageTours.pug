@@ -1,0 +1,61 @@
+extends base
+
+block content
+    main.main
+        .user-view
+            h1.heading-secondary.ma-bt-md Manage Tours
+            .user-view__content
+                table.table
+                    thead
+                        tr
+                            th Image
+                            th Name
+                            th Duration
+                            th Max Group Size
+                            th Difficulty
+                            th Price
+                            th Actions
+                    tbody
+                        each tour in tours
+                            tr
+                                td
+                                    img.tour-photo(src=`/img/tours/${tour.imageCover}`, alt=`${tour.name}`)
+                                td= tour.name
+                                td= `${tour.duration} days`
+                                td= tour.maxGroupSize
+                                td= tour.difficulty
+                                td= `$${tour.price}`
+                                td.table__actions
+                                    a.btn.btn--small.btn--green(href=`/tours/${tour.slug}`) View
+                                    a.btn.btn--small.btn--blue(href=`/edit-tour/${tour.id}`) Edit
+                                    button.btn.btn--small.btn--red.btn-delete-tour(data-tour-id=`${tour.id}`) Delete
+
+block append head
+    style.
+        .user-view__content {
+            padding: 2rem;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .table th, .table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #f1f1f1;
+        }
+        .tour-photo {
+            width: 6rem;
+            height: 4rem;
+            object-fit: cover;
+        }
+        .table__actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .btn--small {
+            padding: 0.5rem 1rem;
+            font-size: 1.2rem;
+        }
+
+    script(src='/js/bundle.js')

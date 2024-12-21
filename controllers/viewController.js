@@ -113,3 +113,25 @@ exports.getManageReviewsPage = catchAsync(async (req, res, next) => {
     reviews
   });
 });
+
+exports.getManageToursPage = catchAsync(async (req, res, next) => {
+  const tours = await Tour.find();
+
+  res.status(200).render('manageTours', {
+    title: 'Manage Tours',
+    tours
+  });
+});
+
+exports.getEditTourPage = catchAsync(async (req, res, next) => {
+  const tour = await Tour.findById(req.params.id);
+
+  if (!tour) {
+    return next(new AppError('No tour found with that ID', 404));
+  }
+
+  res.status(200).render('editTour', {
+    title: `Edit ${tour.name}`,
+    tour
+  });
+});

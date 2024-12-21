@@ -38,4 +38,18 @@ router.get(
   authController.restrictTo('admin'),
   viewController.getManageReviewsPage
 );
+
+router.get(
+  '/manage-tours',
+  authController.protect,
+  authController.restrictTo('admin', 'lead-guide'),
+  viewController.getManageToursPage
+);
+
+router.get(
+  '/edit-tour/:id',
+  authController.protect,
+  authController.restrictTo('admin', 'lead-guide'),
+  viewController.getEditTourPage
+);
 module.exports = router;

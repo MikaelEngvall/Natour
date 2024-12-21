@@ -1,0 +1,40 @@
+extends base
+
+block content
+  main.main
+    .card-container
+      .card
+        .card__header
+          h2.heading-secondary.ma-bt-lg Edit Tour: #{tour.name}
+
+        form.form.form-edit-tour
+          .form__group
+            label.form__label(for='name') Name
+            input#name.form__input(type='text', value=tour.name, required)
+          .form__group
+            label.form__label(for='duration') Duration (days)
+            input#duration.form__input(type='number', value=tour.duration, required)
+          .form__group
+            label.form__label(for='maxGroupSize') Max Group Size
+            input#maxGroupSize.form__input(type='number', value=tour.maxGroupSize, required)
+          .form__group
+            label.form__label(for='difficulty') Difficulty
+            select#difficulty.form__input(required)
+              option(value='easy', selected=tour.difficulty === 'easy') Easy
+              option(value='medium', selected=tour.difficulty === 'medium') Medium
+              option(value='difficult', selected=tour.difficulty === 'difficult') Difficult
+          .form__group
+            label.form__label(for='price') Price
+            input#price.form__input(type='number', value=tour.price, required)
+          .form__group
+            label.form__label(for='summary') Summary
+            textarea#summary.form__input(rows='3', required)= tour.summary
+          .form__group
+            label.form__label(for='description') Description
+            textarea#description.form__input(rows='5', required)= tour.description
+          
+          .form__group.right
+            button.btn.btn--small.btn--green.btn--save-tour Save Tour
+
+block append head
+  script(src='/js/editTour.js')
