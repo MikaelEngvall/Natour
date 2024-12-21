@@ -13,7 +13,7 @@ router
   .route('/')
   .get(bookingController.getAllBookings)
   .post(bookingController.createBooking);
-
+//
 router
   .route('/:id')
   .get(bookingController.getBooking)

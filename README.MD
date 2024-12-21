@@ -29,16 +29,19 @@ Natours/
 ## 🚀 Installation
 
 1. Clone the repository:
+
    ```
    git clone https://github.com/mikae/Natours.git
    ```
 
 2. Navigate to the project directory:
+
    ```
    cd Natours
    ```
 
 3. Install dependencies:
+
    ```
    npm install
    ```
@@ -92,4 +95,4 @@ Mikael Engvall
 
 ## 📄 License
 
-This project is licensed under the ISC License.
+This project is licensed under the ISC License!
